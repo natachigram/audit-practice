@@ -1,10 +1,11 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "./OverUnderFlowVul.sol";
+import './OverUnderFlowVul.sol';
 
 contract LotteryPOC {
     OverUnderFlowVul public lottery;
+    mapping(address => uint256) public balances;
 
     constructor() {
         lottery = new OverUnderFlowVul();
@@ -19,11 +20,10 @@ contract LotteryPOC {
     function endLottery() public {
         lottery.endLottery();
     }
-
-    function withdraw() public {
-        uint256 balance = lottery.balances(msg.sender);
+ function withdraw() public {
+        uint256 balance = balances[msg.sender];
         require(balance > 0, "No funds to withdraw");
-        lottery.balances(msg.sender) = 0;
+        balances[msg.sender] = 0;
         payable(msg.sender).transfer(balance);
     }
 }
